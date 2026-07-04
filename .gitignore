@@ -1,0 +1,118 @@
+# =============================================================================
+# SECRETS & CREDENTIALS  — never commit these
+# =============================================================================
+# Environment / secret files
+.env
+.env.*
+!.env.example          # keep a committed template with NO real values
+*.env
+secrets.*
+**/secrets/
+config.local.*
+
+# Keys, certificates, tokens
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+*.jks
+*.cer
+*.crt
+id_rsa*
+*.ppk
+
+# Cloud provider credentials
+.aws/
+aws-credentials*
+*.aws.json
+gcp-*.json
+*service-account*.json
+*credentials*.json
+
+# Mobile signing / store secrets
+app/android/key.properties
+app/android/**/*.keystore
+app/ios/**/*.mobileprovision
+app/ios/**/*.p8
+google-services.json
+GoogleService-Info.plist
+
+# =============================================================================
+# Terraform / IaC  (state and tfvars routinely contain secrets)
+# =============================================================================
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+!example.tfvars        # template only, no real values
+crash.log
+override.tf
+override.tf.json
+
+# CDK
+infra/cdk.out/
+infra/cdk.context.json
+
+# =============================================================================
+# Python (backend)
+# =============================================================================
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+
+# =============================================================================
+# Flutter / Dart (app)
+# =============================================================================
+app/.dart_tool/
+app/.flutter-plugins
+app/.flutter-plugins-dependencies
+app/.packages
+app/build/
+app/.pub-cache/
+app/.pub/
+**/doc/api/
+*.iml
+.flutter-versions
+
+# =============================================================================
+# Node (if any tooling/CDK uses it)
+# =============================================================================
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# =============================================================================
+# OS / editor cruft
+# =============================================================================
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/*
+!.vscode/extensions.json    # ok to share recommended extensions
+*.code-workspace
+
+# =============================================================================
+# Logs, temp, local media (avoid committing site photos/video — GDPR)
+# =============================================================================
+*.log
+tmp/
+.cache/
+sample_media/            # keep real/test site imagery out of git
+*.mp4
+*.mov

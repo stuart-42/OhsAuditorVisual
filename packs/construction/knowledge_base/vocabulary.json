@@ -1,0 +1,19 @@
+{
+  "_note": "Controlled vocabulary. The interface offers only these; keys are built from the same source. PROVISIONAL until adjudicated.",
+  "tags": [
+    {"id": "control.ppe.head", "label": "Head protection", "parent": "control.ppe"},
+    {"id": "control.ppe.foot", "label": "Foot protection", "parent": "control.ppe"},
+    {"id": "control.ppe.eye", "label": "Eye protection", "parent": "control.ppe"}
+  ],
+  "reason_codes": [
+    {"id": "not_worn", "label": "Provided but not worn"},
+    {"id": "not_provided", "label": "Not provided"},
+    {"id": "doesnt_fit", "label": "Does not fit"}
+  ],
+  "document_types": [
+    {"id": "loler_certificate", "label": "LOLER thorough examination certificate"},
+    {"id": "pressure_system_scheme", "label": "Pressure system written scheme of examination"},
+    {"id": "insurance_certificate", "label": "Employers' liability insurance certificate"},
+    {"id": "training_record", "label": "Training record"}
+  ]
+}

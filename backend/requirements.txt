@@ -1,0 +1,3 @@
+# The deterministic reasoning core has NO runtime dependencies (standard library only).
+# Development/testing only:
+pytest>=8.0

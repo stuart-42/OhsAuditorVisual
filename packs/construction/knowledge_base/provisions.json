@@ -1,0 +1,10 @@
+{
+  "_note": "Regulation provisions. legal_status and duty_scope are authored judgements. PROVISIONAL until adjudicated against L25.",
+  "provisions": [
+    {"id": "ppe_reg4", "instrument": "Personal Protective Equipment at Work Regulations 1992", "section": "regulation 4", "legal_status": "law", "duty_scope": "specific", "summary": "Employer must provide suitable personal protective equipment where risks are not adequately controlled by other means.", "source_url": "https://www.legislation.gov.uk/uksi/1992/2966", "ogl": true},
+    {"id": "ppe_reg10", "instrument": "Personal Protective Equipment at Work Regulations 1992", "section": "regulation 10", "legal_status": "law", "duty_scope": "specific", "summary": "Every employee must use the personal protective equipment provided in accordance with training and instruction.", "source_url": "https://www.legislation.gov.uk/uksi/1992/2966", "ogl": true},
+    {"id": "mhswr_reg3", "instrument": "Management of Health and Safety at Work Regulations 1999", "section": "regulation 3", "legal_status": "law", "duty_scope": "general", "summary": "Employer must make a suitable and sufficient assessment of the risks to health and safety.", "source_url": "https://www.legislation.gov.uk/uksi/1999/3242", "ogl": true},
+    {"id": "hswa_s2", "instrument": "Health and Safety at Work etc. Act 1974", "section": "section 2", "legal_status": "law", "duty_scope": "general", "summary": "General duty to ensure, so far as is reasonably practicable, the health, safety and welfare of employees.", "source_url": "https://www.legislation.gov.uk/ukpga/1974/37", "ogl": true},
+    {"id": "ppe_reg7", "instrument": "Personal Protective Equipment at Work Regulations 1992", "section": "regulation 7", "legal_status": "law", "duty_scope": "specific", "summary": "Personal protective equipment must be maintained in efficient working order and good repair.", "source_url": "https://www.legislation.gov.uk/uksi/1992/2966", "ogl": true}
+  ]
+}
