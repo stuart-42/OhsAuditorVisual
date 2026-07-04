@@ -4,6 +4,7 @@ One canonical action is shown once, accumulating every engaged provision it disc
 specific-duty-first then general. Any engaged provision not covered by a selected action is a gap.
 Entirely deterministic and reproducible.
 """
+
 from __future__ import annotations
 
 from .knowledge_base import KnowledgeBase
@@ -28,7 +29,7 @@ def consolidate(findings, kb: KnowledgeBase) -> ConsolidationResult:
         all_engaged.update(f.engaged_provisions)
 
     # union of selected actions across the inspection, deduplicated by action id
-    selected: dict[str, list[str]] = {}   # action_id -> finding ids that selected it
+    selected: dict[str, list[str]] = {}  # action_id -> finding ids that selected it
     for fid, aids in actions_by_finding.items():
         for aid in aids:
             selected.setdefault(aid, [])
@@ -43,10 +44,15 @@ def consolidate(findings, kb: KnowledgeBase) -> ConsolidationResult:
         here = [kb.provisions[pid] for pid in action.discharges if pid in all_engaged]
         here.sort(key=lambda p: _scope_rank(p.duty_scope))
         covered.update(p.id for p in here)
-        consolidated.append(ConsolidatedAction(
-            action_id=aid, label=action.label, discharges_here=here,
-            from_findings=finding_ids, acop_derived=action.acop_derived,
-        ))
+        consolidated.append(
+            ConsolidatedAction(
+                action_id=aid,
+                label=action.label,
+                discharges_here=here,
+                from_findings=finding_ids,
+                acop_derived=action.acop_derived,
+            )
+        )
 
     # gaps: engaged provisions with no selected action covering them
     gaps: list[Gap] = []

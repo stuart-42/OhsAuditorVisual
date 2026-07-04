@@ -1,4 +1,5 @@
 """Runnable worked example: the head + foot protection findings from the design doc."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -14,14 +15,28 @@ PACK = Path(__file__).resolve().parents[2] / "packs" / "construction" / "knowled
 
 def main() -> None:
     kb = KnowledgeBase(PACK)
-    head = Finding(id="obs_001", hazard="head_injury_falling_object", control_at_issue="ppe_head",
-                   tags=["control.ppe.head"], reason_codes=["not_worn"],
-                   who="An operative", hazard_context="overhead work was taking place",
-                   outcome="serious head injury from a falling object", priority=PriorityBand.high)
-    foot = Finding(id="obs_002", hazard="foot_injury_falling_object", control_at_issue="ppe_foot",
-                   tags=["control.ppe.foot"], reason_codes=["not_worn"],
-                   who="An operative", hazard_context="materials were being handled",
-                   outcome="a crush or penetration foot injury", priority=PriorityBand.medium)
+    head = Finding(
+        id="obs_001",
+        hazard="head_injury_falling_object",
+        control_at_issue="ppe_head",
+        tags=["control.ppe.head"],
+        reason_codes=["not_worn"],
+        who="An operative",
+        hazard_context="overhead work was taking place",
+        outcome="serious head injury from a falling object",
+        priority=PriorityBand.high,
+    )
+    foot = Finding(
+        id="obs_002",
+        hazard="foot_injury_falling_object",
+        control_at_issue="ppe_foot",
+        tags=["control.ppe.foot"],
+        reason_codes=["not_worn"],
+        who="An operative",
+        hazard_context="materials were being handled",
+        outcome="a crush or penetration foot injury",
+        priority=PriorityBand.medium,
+    )
 
     for f in (head, foot):
         engage(f, kb)
@@ -30,7 +45,9 @@ def main() -> None:
     result = consolidate([head, foot], kb)
     print("\nConsolidated corrective-action plan:")
     for a in result.actions:
-        cites = "; ".join(f"{p.instrument} {p.section} [{p.duty_scope.value}]" for p in a.discharges_here)
+        cites = "; ".join(
+            f"{p.instrument} {p.section} [{p.duty_scope.value}]" for p in a.discharges_here
+        )
         flag = "  (Approved Code of Practice-derived)" if a.acop_derived else ""
         print(f"  - {a.label}{flag}")
         print(f"      discharges: {cites}")

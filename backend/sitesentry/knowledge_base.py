@@ -4,6 +4,7 @@ The knowledge is authored as legible structured files (see packs/construction/kn
 At load time those records are turned into keyed indexes for exact, deterministic recall. Nothing
 here searches text; that is the separate retrieval assist added later.
 """
+
 from __future__ import annotations
 
 import json
@@ -26,7 +27,11 @@ class KnowledgeBase:
 
     def _load(self) -> None:
         for p in self._read("provisions.json")["provisions"]:
-            p = {**p, "legal_status": LegalStatus(p["legal_status"]), "duty_scope": DutyScope(p["duty_scope"])}
+            p = {
+                **p,
+                "legal_status": LegalStatus(p["legal_status"]),
+                "duty_scope": DutyScope(p["duty_scope"]),
+            }
             self.provisions[p["id"]] = Provision(**p)
         for a in self._read("actions.json")["actions"]:
             self.actions[a["id"]] = CanonicalAction(**a)

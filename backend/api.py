@@ -8,13 +8,13 @@ Run:
 
 Then open http://localhost:8000
 """
+
 from __future__ import annotations
 
 import json
 import sys
 import uuid
 from pathlib import Path
-from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
@@ -37,12 +37,13 @@ app = FastAPI(title="SiteSentry Reasoning Core", version="0.1.0-milestone1")
 
 # ── Request / response models ─────────────────────────────────────────────────
 
+
 class FindingIn(BaseModel):
-    id: Optional[str] = None
+    id: str | None = None
     hazard: str = ""
     control_at_issue: str = ""
-    tags: List[str]
-    reason_codes: List[str]
+    tags: list[str]
+    reason_codes: list[str]
     who: str = "An operative"
     hazard_context: str = "the work area"
     outcome: str = "injury"
@@ -50,7 +51,7 @@ class FindingIn(BaseModel):
 
 
 class ConsolidateRequest(BaseModel):
-    findings: List[FindingIn]
+    findings: list[FindingIn]
 
 
 def _to_finding(f: FindingIn) -> Finding:
@@ -74,6 +75,7 @@ def _to_finding(f: FindingIn) -> Finding:
 
 # ── API endpoints ─────────────────────────────────────────────────────────────
 
+
 @app.get("/vocabulary")
 def vocabulary():
     """All tags, reason codes, and document types from the construction domain pack."""
@@ -96,10 +98,7 @@ def consolidate_findings(req: ConsolidateRequest):
     result = consolidate(findings, kb)
     return {
         "advisory": True,
-        "comments": [
-            {"finding_id": fid, "text": text}
-            for fid, text in comments.items()
-        ],
+        "comments": [{"finding_id": fid, "text": text} for fid, text in comments.items()],
         "actions": [
             {
                 "action_id": a.action_id,
@@ -133,6 +132,7 @@ def consolidate_findings(req: ConsolidateRequest):
 
 
 # ── Browser test harness ──────────────────────────────────────────────────────
+
 
 @app.get("/", response_class=HTMLResponse)
 def test_harness():

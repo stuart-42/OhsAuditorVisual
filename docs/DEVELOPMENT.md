@@ -61,11 +61,27 @@ Everything in `eu-west-2`.
 Green CI · tenant-scoped reads/writes · audit-logged state changes · AI output labelled
 advisory · human edit/delete path intact · no secrets · no non-`eu-west-2` data path.
 
-## Suggested first issues (v0 thin slice)
+## Current issues — Milestone Zero completion (updated 2026-07-04)
 
-1. Scaffold `app/` (Flutter) and `backend/` (Python) so CI jobs activate.
-2. Capture a photo → upload to S3 (`eu-west-2`, encrypted, tenant-prefixed).
-3. Backend endpoint → Bedrock (Claude) → returns detections + reg refs + draft actions.
-4. Observation review screen: accept / amend / delete, record action taken (HITL).
-5. Generate a PDF report from observations.
-6. Stub: on-device redaction + edge detector interfaces (no model yet).
+Note: the "thin slice" list below described the original vision-first design, which was
+superseded by the audit-first reorder at Stage 7. The current priority order is:
+
+1. **Persistence layer** — add a local SQLite or flat-file store so `Finding` records (with
+   their new Milestone Zero fields: `tenant_id`, `site_id`, `recurrence_key`, status,
+   `audit_log`) are actually persisted and can be recalled. The data model already has all
+   required fields; this issue is a storage adapter only.
+2. **Adjudication** — a qualified person verifies the L25 provisions in
+   `packs/construction/knowledge_base/findings_ppe_DRAFT.md` and settles the first batch.
+   Resolve the flagged Control of Substances Hazardous to Health Regulations decision for
+   chemical eye-hazard findings.
+3. **Template JSON** — author `packs/construction/template.json` (premises / practices / people
+   sections, prompted elements per section, element-to-vocabulary-tag mappings). Element
+   outcomes (satisfactory / finding / not applicable) must be stored from the first audit so
+   coverage and compliance measures are available from day one.
+4. **DPIA completion** — `docs/DPIA.md` exists as a skeleton. A qualified person must review
+   and sign it, and the data controller must confirm the lawful basis, before any real-site use.
+5. **Flutter shell** — scaffold `app/` so the CI Flutter job activates; implement the
+   section-and-prompted-element capture screen against the real data model and the
+   `/vocabulary` + `/consolidate` API. No vision yet.
+6. **Protect main** — confirm branch protection is active and the CI job is required before
+   merge. Remove the `|| true` fallbacks on pip-audit and bandit once the codebase stabilises.
