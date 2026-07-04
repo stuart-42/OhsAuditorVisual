@@ -42,9 +42,11 @@ r1 = consolidate([head()], kb)
 prov = next(a for a in r1.actions if a.action_id == "ca_provide_head").discharges_here
 check("specific duties lead general", [p.duty_scope.value for p in prov] == sorted([p.duty_scope.value for p in prov], key=lambda s: 0 if s == "specific" else 1))
 
-check("gap detected for uncovered provision", any(g.provision.id == "ppe_reg7" for g in consolidate([head()], kb).gaps))
+r1 = consolidate([head()], kb)
+check("maintenance action closes ppe_reg7 gap", not any(g.provision.id == "ppe_reg7" for g in r1.gaps))
+check("maintenance action appears in plan", any(a.action_id == "ca_maintain_ppe" for a in r1.actions))
 
-_, un = engage(Finding(id="x", hazard="h", control_at_issue="c", tags=["control.ppe.eye"], reason_codes=["not_worn"]), kb)
-check("unmapped combination flagged", un == ["control.ppe.eye x not_worn"])
+_, un = engage(Finding(id="x", hazard="h", control_at_issue="c", tags=["control.ppe.hiviz"], reason_codes=["doesnt_fit"]), kb)
+check("unmapped combination flagged", un == ["control.ppe.hiviz x doesnt_fit"])
 
 print("\nAll self-checks passed.")

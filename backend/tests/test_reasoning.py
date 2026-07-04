@@ -56,14 +56,56 @@ def test_citation_accumulation_and_ordering(kb):
     assert scopes == sorted(scopes, key=lambda s: 0 if s == "specific" else 1)
 
 
-def test_gap_detection(kb):
-    # head protection engages a maintenance duty (ppe_reg7) with no action authored yet -> a gap
+def test_gap_detection():
+    # Synthetic KB: one provision engaged by a finding, but the selected action does not discharge it.
+    # Tests the gap-detection mechanism independently of the production KB's completeness state.
+    import json
+    import tempfile
+
+    prov = [{"id": "syn_p1", "instrument": "Synthetic Act", "section": "s1",
+              "legal_status": "law", "duty_scope": "specific", "summary": "Synthetic provision"}]
+    acts = [{"id": "syn_a1", "label": "Synthetic action", "discharges": [],
+              "sourced_from": {}, "acop_derived": False, "comment_template": ""}]
+    mapp = [{"tag": "syn.tag", "reason": "syn_reason", "hazard": "syn",
+              "provisions": ["syn_p1"], "actions": ["syn_a1"]}]
+    vocab = {"tags": [], "reason_codes": [], "document_types": []}
+
+    with tempfile.TemporaryDirectory() as td:
+        from pathlib import Path
+        tdp = Path(td)
+        (tdp / "provisions.json").write_text(json.dumps({"provisions": prov}))
+        (tdp / "actions.json").write_text(json.dumps({"actions": acts}))
+        (tdp / "mapping.json").write_text(json.dumps({"map": mapp}))
+        (tdp / "vocabulary.json").write_text(json.dumps(vocab))
+        syn_kb = KnowledgeBase(tdp)
+
+    f = Finding(id="gap_obs", hazard="h", control_at_issue="c",
+                tags=["syn.tag"], reason_codes=["syn_reason"])
+    engage(f, syn_kb)
+    result = consolidate([f], syn_kb)
+    assert any(g.provision.id == "syn_p1" for g in result.gaps)
+
+
+def test_maintenance_action_closes_ppe_reg7_gap(kb):
+    # Adding ca_maintain_ppe to the KB should discharge ppe_reg7 so it is no longer a gap.
     result = consolidate([_head()], kb)
-    assert any(g.provision.id == "ppe_reg7" for g in result.gaps)
+    assert not any(g.provision.id == "ppe_reg7" for g in result.gaps)
+    assert any(a.action_id == "ca_maintain_ppe" for a in result.actions)
 
 
 def test_unmapped_combination_is_flagged(kb):
+    # hi-vis / doesnt_fit is not authored in the mapping — must surface as unmapped.
     f = Finding(id="x", hazard="h", control_at_issue="c",
-                tags=["control.ppe.eye"], reason_codes=["not_worn"])  # eye not in mapping yet
+                tags=["control.ppe.hiviz"], reason_codes=["doesnt_fit"])
     _, unmapped = engage(f, kb)
-    assert unmapped == ["control.ppe.eye x not_worn"]
+    assert unmapped == ["control.ppe.hiviz x doesnt_fit"]
+
+
+def test_eye_protection_now_mapped(kb):
+    # eye x not_worn was previously unmapped; it must now resolve to provisions and actions.
+    f = Finding(id="y", hazard="h", control_at_issue="c",
+                tags=["control.ppe.eye"], reason_codes=["not_worn"])
+    f, unmapped = engage(f, kb)
+    assert unmapped == []
+    assert "ca_provide_eye" in f.applicable_actions
+    assert "ppe_reg4" in f.engaged_provisions

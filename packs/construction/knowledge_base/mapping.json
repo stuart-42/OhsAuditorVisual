@@ -1,36 +1,97 @@
 {
-  "_note": "Keyed on (tag, reason). Yields engaged provisions AND applicable canonical actions. PROVISIONAL.",
+  "_note": "Keyed on (tag, reason). Yields engaged provisions AND applicable canonical actions. PROVISIONAL — verify provision selection and duty-scope markings before settling.",
+  "_logic": "not_worn engages ppe_reg10 (employee use duty) and ppe_reg4; not_provided and doesnt_fit engage ppe_reg4 only (reg10 cannot be breached if PPE was never issued or is unsuitable). ppe_reg7 (maintenance) engaged in all PPE findings. mhswr_reg3 and hswa_s2 are general duties engaged in every finding.",
   "map": [
     {
       "tag": "control.ppe.head",
       "reason": "not_worn",
       "hazard": "head_injury_falling_object",
-      "provisions": [
-        "ppe_reg4",
-        "ppe_reg10",
-        "mhswr_reg3",
-        "hswa_s2",
-        "ppe_reg7"
-      ],
-      "actions": [
-        "ca_provide_head",
-        "ca_reassess"
-      ]
+      "provisions": ["ppe_reg4", "ppe_reg10", "ppe_reg7", "mhswr_reg3", "hswa_s2"],
+      "actions": ["ca_provide_head", "ca_maintain_ppe", "ca_reassess"]
+    },
+    {
+      "tag": "control.ppe.head",
+      "reason": "not_provided",
+      "hazard": "head_injury_falling_object",
+      "provisions": ["ppe_reg4", "ppe_reg7", "mhswr_reg3", "hswa_s2"],
+      "actions": ["ca_provide_head", "ca_maintain_ppe", "ca_reassess"]
+    },
+    {
+      "tag": "control.ppe.head",
+      "reason": "doesnt_fit",
+      "hazard": "head_injury_falling_object",
+      "provisions": ["ppe_reg4", "ppe_reg7", "mhswr_reg3", "hswa_s2"],
+      "actions": ["ca_provide_head", "ca_maintain_ppe", "ca_reassess"]
     },
     {
       "tag": "control.ppe.foot",
       "reason": "not_worn",
       "hazard": "foot_injury_falling_object",
-      "provisions": [
-        "ppe_reg4",
-        "ppe_reg10",
-        "mhswr_reg3",
-        "hswa_s2"
-      ],
-      "actions": [
-        "ca_provide_foot",
-        "ca_reassess"
-      ]
+      "provisions": ["ppe_reg4", "ppe_reg10", "ppe_reg7", "mhswr_reg3", "hswa_s2"],
+      "actions": ["ca_provide_foot", "ca_maintain_ppe", "ca_reassess"]
+    },
+    {
+      "tag": "control.ppe.foot",
+      "reason": "not_provided",
+      "hazard": "foot_injury_falling_object",
+      "provisions": ["ppe_reg4", "ppe_reg7", "mhswr_reg3", "hswa_s2"],
+      "actions": ["ca_provide_foot", "ca_maintain_ppe", "ca_reassess"]
+    },
+    {
+      "tag": "control.ppe.foot",
+      "reason": "doesnt_fit",
+      "hazard": "foot_injury_falling_object",
+      "provisions": ["ppe_reg4", "ppe_reg7", "mhswr_reg3", "hswa_s2"],
+      "actions": ["ca_provide_foot", "ca_maintain_ppe", "ca_reassess"]
+    },
+    {
+      "tag": "control.ppe.eye",
+      "reason": "not_worn",
+      "hazard": "eye_injury_flying_particles_or_chemical_splash",
+      "provisions": ["ppe_reg4", "ppe_reg10", "ppe_reg7", "mhswr_reg3", "hswa_s2"],
+      "actions": ["ca_provide_eye", "ca_maintain_ppe", "ca_reassess"]
+    },
+    {
+      "tag": "control.ppe.eye",
+      "reason": "not_provided",
+      "hazard": "eye_injury_flying_particles_or_chemical_splash",
+      "provisions": ["ppe_reg4", "ppe_reg7", "mhswr_reg3", "hswa_s2"],
+      "actions": ["ca_provide_eye", "ca_maintain_ppe", "ca_reassess"]
+    },
+    {
+      "tag": "control.ppe.eye",
+      "reason": "doesnt_fit",
+      "hazard": "eye_injury_flying_particles_or_chemical_splash",
+      "provisions": ["ppe_reg4", "ppe_reg7", "mhswr_reg3", "hswa_s2"],
+      "actions": ["ca_provide_eye", "ca_maintain_ppe", "ca_reassess"]
+    },
+    {
+      "tag": "control.ppe.hand",
+      "reason": "not_worn",
+      "hazard": "hand_injury_cut_abrasion_or_chemical_contact",
+      "provisions": ["ppe_reg4", "ppe_reg10", "ppe_reg7", "mhswr_reg3", "hswa_s2"],
+      "actions": ["ca_provide_gloves", "ca_maintain_ppe", "ca_reassess"]
+    },
+    {
+      "tag": "control.ppe.hand",
+      "reason": "not_provided",
+      "hazard": "hand_injury_cut_abrasion_or_chemical_contact",
+      "provisions": ["ppe_reg4", "ppe_reg7", "mhswr_reg3", "hswa_s2"],
+      "actions": ["ca_provide_gloves", "ca_maintain_ppe", "ca_reassess"]
+    },
+    {
+      "tag": "control.ppe.hiviz",
+      "reason": "not_worn",
+      "hazard": "struck_by_vehicle_or_plant",
+      "provisions": ["ppe_reg4", "ppe_reg10", "ppe_reg7", "mhswr_reg3", "hswa_s2"],
+      "actions": ["ca_provide_hiviz", "ca_maintain_ppe", "ca_reassess"]
+    },
+    {
+      "tag": "control.ppe.hiviz",
+      "reason": "not_provided",
+      "hazard": "struck_by_vehicle_or_plant",
+      "provisions": ["ppe_reg4", "ppe_reg7", "mhswr_reg3", "hswa_s2"],
+      "actions": ["ca_provide_hiviz", "ca_maintain_ppe", "ca_reassess"]
     }
   ]
 }

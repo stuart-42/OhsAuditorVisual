@@ -1,19 +1,21 @@
 {
   "_note": "Controlled vocabulary. The interface offers only these; keys are built from the same source. PROVISIONAL until adjudicated.",
   "tags": [
-    {"id": "control.ppe.head", "label": "Head protection", "parent": "control.ppe"},
-    {"id": "control.ppe.foot", "label": "Foot protection", "parent": "control.ppe"},
-    {"id": "control.ppe.eye", "label": "Eye protection", "parent": "control.ppe"}
+    {"id": "control.ppe.head",    "label": "Head protection",           "parent": "control.ppe"},
+    {"id": "control.ppe.foot",    "label": "Foot protection",           "parent": "control.ppe"},
+    {"id": "control.ppe.eye",     "label": "Eye protection",            "parent": "control.ppe"},
+    {"id": "control.ppe.hand",    "label": "Hand protection (gloves)",  "parent": "control.ppe"},
+    {"id": "control.ppe.hiviz",   "label": "High-visibility clothing",  "parent": "control.ppe"}
   ],
   "reason_codes": [
-    {"id": "not_worn", "label": "Provided but not worn"},
-    {"id": "not_provided", "label": "Not provided"},
-    {"id": "doesnt_fit", "label": "Does not fit"}
+    {"id": "not_worn",      "label": "Provided but not worn"},
+    {"id": "not_provided",  "label": "Not provided"},
+    {"id": "doesnt_fit",    "label": "Does not fit or is unsuitable"}
   ],
   "document_types": [
-    {"id": "loler_certificate", "label": "LOLER thorough examination certificate"},
-    {"id": "pressure_system_scheme", "label": "Pressure system written scheme of examination"},
-    {"id": "insurance_certificate", "label": "Employers' liability insurance certificate"},
-    {"id": "training_record", "label": "Training record"}
+    {"id": "loler_certificate",        "label": "LOLER thorough examination certificate"},
+    {"id": "pressure_system_scheme",   "label": "Pressure system written scheme of examination"},
+    {"id": "insurance_certificate",    "label": "Employers' liability insurance certificate"},
+    {"id": "training_record",          "label": "Training record"}
   ]
 }
