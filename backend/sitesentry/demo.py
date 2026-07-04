@@ -1,75 +1,43 @@
-"""
-Worked example: a complete OHS site audit using the SiteSentry backend.
-
-Run with:
-    python -m sitesentry.demo          (from backend/)
-"""
-
+"""Runnable worked example: the head + foot protection findings from the design doc."""
 from __future__ import annotations
 
-import json
+from pathlib import Path
 
-from .checker import build_report
-from .models import ComplianceStatus, Severity
-from .reporter import generate_json_report, generate_text_report
+from .comments import render_comment
+from .consolidation import consolidate
+from .knowledge_base import KnowledgeBase
+from .models import Finding, PriorityBand
+from .reasoning import engage
 
-P = ComplianceStatus.PASS
-F = ComplianceStatus.FAIL
-NA = ComplianceStatus.NOT_APPLICABLE
-
-
-def _demo_acme_warehouse():
-    """Simulate a real-world warehouse audit with a mix of pass/fail findings."""
-    answers = {
-        "FE-001": (P,  "All 12 extinguishers tagged; last service Jan 2026", None),
-        "FE-002": (P,  "4 exits clearly marked and unobstructed", None),
-        "FE-003": (F,  "Last test was 18 months ago — overdue", Severity.HIGH),
-        "FE-004": (P,  "Warden list posted on noticeboard, updated Feb 2026", None),
-        "EL-001": (P,  "3 distribution boards: all labeled and accessible", None),
-        "EL-002": (F,  "Frayed cable found near server room entry door", Severity.CRITICAL),
-        "EL-003": (P,  "RCDs tested 6 weeks ago; records on file", None),
-        "EL-004": (F,  "Extension leads in office B have no PAT tags", Severity.MEDIUM),
-        "CH-001": (P,  "SDS binder complete and indexed", None),
-        "CH-002": (F,  "Unlabelled drum in storage room B", Severity.HIGH),
-        "CH-003": (P,  "Two spill kits, both fully stocked", None),
-        "WK-001": (P,  "All walkways clear", None),
-        "WK-002": (P,  "Adequate lighting confirmed in all areas", None),
-        "WK-003": (P,  "First aid kit restocked 2025-12-01; expiry 2027", None),
-        "WK-004": (F,  "Last incident entry dated 4 months ago — gap suspected", Severity.LOW),
-        "WK-005": (P,  "All mandatory signage visible and legible", None),
-        "PP-001": (P,  "Hard hats, vests, safety glasses in good condition", None),
-        "PP-002": (NA, "PPE station instructions not applicable — office zone", None),
-        "PP-003": (P,  "No damaged/expired PPE found", None),
-        "MH-001": (P,  "2 pallet jacks and a reach stacker available", None),
-        "MH-002": (F,  "3 new warehouse staff have no manual handling training record", Severity.MEDIUM),
-    }
-    return build_report("Acme Warehouse — Site A", "J. Smith", answers)
+PACK = Path(__file__).resolve().parents[2] / "packs" / "construction" / "knowledge_base"
 
 
 def main() -> None:
-    print("SiteSentry OHS Audit Backend — Worked Example")
-    print("=" * 60)
+    kb = KnowledgeBase(PACK)
+    head = Finding(id="obs_001", hazard="head_injury_falling_object", control_at_issue="ppe_head",
+                   tags=["control.ppe.head"], reason_codes=["not_worn"],
+                   who="An operative", hazard_context="overhead work was taking place",
+                   outcome="serious head injury from a falling object", priority=PriorityBand.high)
+    foot = Finding(id="obs_002", hazard="foot_injury_falling_object", control_at_issue="ppe_foot",
+                   tags=["control.ppe.foot"], reason_codes=["not_worn"],
+                   who="An operative", hazard_context="materials were being handled",
+                   outcome="a crush or penetration foot injury", priority=PriorityBand.medium)
 
-    report = _demo_acme_warehouse()
+    for f in (head, foot):
+        engage(f, kb)
+        print(f"\nAudit comment ({f.id}): {render_comment(f, kb)}")
 
-    print("\n[1] Text report\n")
-    print(generate_text_report(report))
-
-    print("\n[2] JSON report (summary fields)\n")
-    data = json.loads(generate_json_report(report))
-    print(f"  Site          : {data['site_name']}")
-    print(f"  Auditor       : {data['auditor']}")
-    print(f"  Compliance    : {data['compliance_rate']}%")
-    print(f"  Total findings: {len(data['findings'])}")
-
-    print("\n[3] Actionable findings (FAIL)\n")
-    for finding in report.failed:
-        sev = f"  [{finding.severity.label()}]" if finding.severity else ""
-        print(f"  {finding.item.id}  {finding.item.description}{sev}")
-        if finding.notes:
-            print(f"       → {finding.notes}")
-
-    print()
+    result = consolidate([head, foot], kb)
+    print("\nConsolidated corrective-action plan:")
+    for a in result.actions:
+        cites = "; ".join(f"{p.instrument} {p.section} [{p.duty_scope.value}]" for p in a.discharges_here)
+        flag = "  (Approved Code of Practice-derived)" if a.acop_derived else ""
+        print(f"  - {a.label}{flag}")
+        print(f"      discharges: {cites}")
+        print(f"      from findings: {', '.join(a.from_findings)}")
+    print(f"\nGaps: {'none' if not result.gaps else ''}")
+    for g in result.gaps:
+        print(f"  - uncovered: {g.provision.instrument} {g.provision.section}")
 
 
 if __name__ == "__main__":

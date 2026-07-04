@@ -1,0 +1,30 @@
+# Local guardrails that run BEFORE a commit is created.
+# Install once:  pipx install pre-commit  (or: pip install pre-commit)
+# Then:          pre-commit install
+# Run on all files manually:  pre-commit run --all-files
+repos:
+  # --- Secret detection ---
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.4
+    hooks:
+      - id: gitleaks            # blocks commits containing likely secrets
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: detect-private-key  # blocks committing private keys
+      - id: check-added-large-files
+        args: ["--maxkb=2048"]  # stops accidental media/model blobs
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: check-json
+
+  # --- Python lint/format (matches CI) ---
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff                # lint
+        args: ["--fix"]
+      - id: ruff-format         # format

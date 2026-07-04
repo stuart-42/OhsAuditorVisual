@@ -1,0 +1,8 @@
+{
+  "_note": "Canonical corrective actions. One action may discharge several provisions. Sourced from ACOP/guidance. PROVISIONAL.",
+  "actions": [
+    {"id": "ca_reassess", "label": "Reassess the hazard and apply the hierarchy of control", "discharges": ["mhswr_reg3", "hswa_s2"], "sourced_from": {"publication": "L25", "kind": "acop"}, "acop_derived": true, "comment_template": "{who} observed without {control} where {hazard_context}, which could result in {outcome}{priority_sentiment}"},
+    {"id": "ca_provide_head", "label": "Provide suitable head protection and ensure it is worn in the designated area", "discharges": ["ppe_reg4", "ppe_reg10"], "sourced_from": {"publication": "L25", "kind": "guidance"}, "acop_derived": false, "comment_template": "{who} observed without {control} where {hazard_context}, which could result in {outcome}{priority_sentiment}"},
+    {"id": "ca_provide_foot", "label": "Provide suitable safety footwear and ensure it is worn in the designated area", "discharges": ["ppe_reg4", "ppe_reg10"], "sourced_from": {"publication": "L25", "kind": "guidance"}, "acop_derived": false, "comment_template": "{who} observed without {control} where {hazard_context}, which could result in {outcome}{priority_sentiment}"}
+  ]
+}

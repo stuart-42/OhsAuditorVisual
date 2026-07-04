@@ -1,0 +1,2 @@
+# Local vision prototype only. Heavy-ish (pulls torch) but CPU-only and free.
+ultralytics>=8.3.0

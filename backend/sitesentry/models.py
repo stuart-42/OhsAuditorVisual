@@ -1,157 +1,91 @@
-"""Core data models for OHS audit management."""
+"""Domain models for the reasoning core — standard-library only, no external dependency.
 
+Only the entities the deterministic reasoning needs are modelled here; the wider hierarchy
+(tenant, client, region, site, inspection, evidence) is referenced by identifier and fleshed out
+as milestones land. Validation/serialisation libraries can wrap these at the API layer later; the
+core stays dependency-free. Nothing here decides substance with a language model.
+"""
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass, field
-from datetime import datetime
 from enum import Enum
-from typing import List, Optional
 
 
-class Severity(Enum):
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
-    CRITICAL = "critical"
-
-    def label(self) -> str:
-        return {
-            Severity.LOW: "Low",
-            Severity.MEDIUM: "Medium",
-            Severity.HIGH: "High",
-            Severity.CRITICAL: "CRITICAL",
-        }[self]
+class LegalStatus(str, Enum):
+    law = "law"
+    approved_code_of_practice = "acop"
+    guidance = "guidance"
 
 
-class ComplianceStatus(Enum):
-    PASS = "pass"
-    FAIL = "fail"
-    NOT_APPLICABLE = "not_applicable"
-    PENDING = "pending"
+class DutyScope(str, Enum):
+    general = "general"
+    specific = "specific"
 
-    def label(self) -> str:
-        return {
-            ComplianceStatus.PASS: "PASS",
-            ComplianceStatus.FAIL: "FAIL",
-            ComplianceStatus.NOT_APPLICABLE: "N/A",
-            ComplianceStatus.PENDING: "PENDING",
-        }[self]
+
+class PriorityBand(str, Enum):
+    high = "high"
+    medium = "medium"
+    low = "low"
 
 
 @dataclass
-class AuditItem:
-    """A single item to be checked during an OHS audit."""
-
+class Provision:
+    """A single regulation provision. legal_status and duty_scope are authored judgements."""
     id: str
-    category: str
-    description: str
-    required: bool = True
+    instrument: str
+    section: str
+    legal_status: LegalStatus
+    duty_scope: DutyScope
+    summary: str
+    source_url: str = ""
+    ogl: bool = True
 
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, AuditItem):
-            return NotImplemented
-        return self.id == other.id
 
-    def __hash__(self) -> int:
-        return hash(self.id)
+@dataclass
+class CanonicalAction:
+    """A corrective action that may discharge several provisions across instruments."""
+    id: str
+    label: str
+    discharges: list[str] = field(default_factory=list)
+    sourced_from: dict = field(default_factory=dict)
+    acop_derived: bool = False
+    comment_template: str = ""
 
 
 @dataclass
 class Finding:
-    """The result of auditing a single AuditItem."""
-
-    item: AuditItem
-    status: ComplianceStatus
-    notes: str = ""
-    severity: Optional[Severity] = None
-
-    @property
-    def is_actionable(self) -> bool:
-        return self.status == ComplianceStatus.FAIL
-
-    def to_dict(self) -> dict:
-        return {
-            "id": self.item.id,
-            "category": self.item.category,
-            "description": self.item.description,
-            "status": self.status.value,
-            "notes": self.notes,
-            "severity": self.severity.value if self.severity else None,
-        }
+    """An on-site observation. The hazard and the control-at-issue are recorded separately."""
+    id: str
+    hazard: str
+    control_at_issue: str
+    tags: list[str]
+    reason_codes: list[str]
+    who: str = "Operative"
+    hazard_context: str = "the work area"
+    outcome: str = "injury"
+    priority: PriorityBand = PriorityBand.medium
+    engaged_provisions: list[str] = field(default_factory=list)   # DERIVED by the engine
+    applicable_actions: list[str] = field(default_factory=list)   # DERIVED by the engine
 
 
 @dataclass
-class AuditReport:
-    """A complete OHS audit report for a site."""
+class ConsolidatedAction:
+    """One canonical action shown once, with every engaged provision it discharges."""
+    action_id: str
+    label: str
+    discharges_here: list[Provision]   # engaged provisions covered, specific first
+    from_findings: list[str]
+    acop_derived: bool
 
-    site_name: str
-    auditor: str
-    findings: List[Finding] = field(default_factory=list)
-    conducted_at: Optional[datetime] = None
 
-    def __post_init__(self) -> None:
-        if self.conducted_at is None:
-            self.conducted_at = datetime.now()
+@dataclass
+class Gap:
+    """An engaged provision left uncovered by any selected action."""
+    provision: Provision
+    from_findings: list[str]
 
-    # ── filters ───────────────────────────────────────────────────────────────
 
-    @property
-    def passed(self) -> List[Finding]:
-        return [f for f in self.findings if f.status == ComplianceStatus.PASS]
-
-    @property
-    def failed(self) -> List[Finding]:
-        return [f for f in self.findings if f.status == ComplianceStatus.FAIL]
-
-    @property
-    def not_applicable(self) -> List[Finding]:
-        return [f for f in self.findings if f.status == ComplianceStatus.NOT_APPLICABLE]
-
-    @property
-    def pending(self) -> List[Finding]:
-        return [f for f in self.findings if f.status == ComplianceStatus.PENDING]
-
-    @property
-    def applicable(self) -> List[Finding]:
-        return [f for f in self.findings if f.status != ComplianceStatus.NOT_APPLICABLE]
-
-    @property
-    def critical_failures(self) -> List[Finding]:
-        return [f for f in self.failed if f.severity == Severity.CRITICAL]
-
-    # ── metrics ───────────────────────────────────────────────────────────────
-
-    @property
-    def compliance_rate(self) -> float:
-        """Percentage of scored (PASS or FAIL) items that passed (0–100)."""
-        scored = [
-            f for f in self.applicable
-            if f.status in (ComplianceStatus.PASS, ComplianceStatus.FAIL)
-        ]
-        if not scored:
-            return 0.0
-        return len([f for f in scored if f.status == ComplianceStatus.PASS]) / len(scored) * 100
-
-    # ── grouping ──────────────────────────────────────────────────────────────
-
-    def categories(self) -> List[str]:
-        seen: List[str] = []
-        for f in self.findings:
-            if f.item.category not in seen:
-                seen.append(f.item.category)
-        return seen
-
-    def findings_by_category(self, category: str) -> List[Finding]:
-        return [f for f in self.findings if f.item.category == category]
-
-    # ── serialisation ─────────────────────────────────────────────────────────
-
-    def to_dict(self) -> dict:
-        return {
-            "site_name": self.site_name,
-            "auditor": self.auditor,
-            "conducted_at": self.conducted_at.isoformat() if self.conducted_at else None,
-            "compliance_rate": round(self.compliance_rate, 1),
-            "findings": [f.to_dict() for f in self.findings],
-        }
+@dataclass
+class ConsolidationResult:
+    actions: list[ConsolidatedAction]
+    gaps: list[Gap]

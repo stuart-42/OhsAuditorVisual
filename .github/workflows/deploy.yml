@@ -1,0 +1,39 @@
+name: Deploy
+
+# Manually gated. Uses AWS OIDC (no long-lived keys). Requires a protected
+# "production" environment in GitHub settings so a human must approve each deploy.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  id-token: write   # needed for OIDC
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to AWS (eu-west-2)
+    runs-on: ubuntu-latest
+    environment: production   # add required reviewers in repo settings -> Environments
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: eu-west-2
+
+      # --- Replace the placeholder below with your IaC apply step. ---
+      # Terraform example:
+      #   - uses: hashicorp/setup-terraform@v3
+      #   - run: terraform init && terraform apply -auto-approve
+      # CDK example:
+      #   - run: npm ci && npx cdk deploy --require-approval never
+      - name: Deploy (placeholder)
+        run: echo "Wire up Terraform/CDK apply here. Region is pinned to eu-west-2."

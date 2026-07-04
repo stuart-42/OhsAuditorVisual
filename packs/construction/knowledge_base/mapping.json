@@ -1,0 +1,36 @@
+{
+  "_note": "Keyed on (tag, reason). Yields engaged provisions AND applicable canonical actions. PROVISIONAL.",
+  "map": [
+    {
+      "tag": "control.ppe.head",
+      "reason": "not_worn",
+      "hazard": "head_injury_falling_object",
+      "provisions": [
+        "ppe_reg4",
+        "ppe_reg10",
+        "mhswr_reg3",
+        "hswa_s2",
+        "ppe_reg7"
+      ],
+      "actions": [
+        "ca_provide_head",
+        "ca_reassess"
+      ]
+    },
+    {
+      "tag": "control.ppe.foot",
+      "reason": "not_worn",
+      "hazard": "foot_injury_falling_object",
+      "provisions": [
+        "ppe_reg4",
+        "ppe_reg10",
+        "mhswr_reg3",
+        "hswa_s2"
+      ],
+      "actions": [
+        "ca_provide_foot",
+        "ca_reassess"
+      ]
+    }
+  ]
+}
