@@ -1,4 +1,5 @@
 """Engage provisions and gather applicable actions for a finding — deterministic, no language model."""
+
 from __future__ import annotations
 
 from .knowledge_base import KnowledgeBase

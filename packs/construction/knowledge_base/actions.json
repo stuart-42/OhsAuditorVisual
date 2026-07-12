@@ -1,8 +1,61 @@
 {
-  "_note": "Canonical corrective actions. One action may discharge several provisions. Sourced from ACOP/guidance. PROVISIONAL.",
+  "_note": "Canonical corrective actions. One action may discharge several provisions. Sourced from ACOP/guidance. PROVISIONAL — verify against L25 before marking settled.",
   "actions": [
-    {"id": "ca_reassess", "label": "Reassess the hazard and apply the hierarchy of control", "discharges": ["mhswr_reg3", "hswa_s2"], "sourced_from": {"publication": "L25", "kind": "acop"}, "acop_derived": true, "comment_template": "{who} observed without {control} where {hazard_context}, which could result in {outcome}{priority_sentiment}"},
-    {"id": "ca_provide_head", "label": "Provide suitable head protection and ensure it is worn in the designated area", "discharges": ["ppe_reg4", "ppe_reg10"], "sourced_from": {"publication": "L25", "kind": "guidance"}, "acop_derived": false, "comment_template": "{who} observed without {control} where {hazard_context}, which could result in {outcome}{priority_sentiment}"},
-    {"id": "ca_provide_foot", "label": "Provide suitable safety footwear and ensure it is worn in the designated area", "discharges": ["ppe_reg4", "ppe_reg10"], "sourced_from": {"publication": "L25", "kind": "guidance"}, "acop_derived": false, "comment_template": "{who} observed without {control} where {hazard_context}, which could result in {outcome}{priority_sentiment}"}
+    {
+      "id": "ca_reassess",
+      "label": "Reassess the hazard and apply the hierarchy of control",
+      "discharges": ["mhswr_reg3", "hswa_s2"],
+      "sourced_from": {"publication": "L25", "kind": "acop"},
+      "acop_derived": true,
+      "comment_template": "{who} observed without {control} where {hazard_context}, which could result in {outcome}{priority_sentiment}"
+    },
+    {
+      "id": "ca_maintain_ppe",
+      "label": "Inspect, maintain, and replace personal protective equipment to keep it in efficient working order and good repair",
+      "discharges": ["ppe_reg7"],
+      "sourced_from": {"publication": "L25", "kind": "guidance"},
+      "acop_derived": false,
+      "comment_template": ""
+    },
+    {
+      "id": "ca_provide_head",
+      "label": "Provide suitable head protection and ensure it is worn in the designated area",
+      "discharges": ["ppe_reg4", "ppe_reg10"],
+      "sourced_from": {"publication": "L25", "kind": "guidance"},
+      "acop_derived": false,
+      "comment_template": "{who} observed without {control} where {hazard_context}, which could result in {outcome}{priority_sentiment}"
+    },
+    {
+      "id": "ca_provide_foot",
+      "label": "Provide suitable safety footwear and ensure it is worn in the designated area",
+      "discharges": ["ppe_reg4", "ppe_reg10"],
+      "sourced_from": {"publication": "L25", "kind": "guidance"},
+      "acop_derived": false,
+      "comment_template": "{who} observed without {control} where {hazard_context}, which could result in {outcome}{priority_sentiment}"
+    },
+    {
+      "id": "ca_provide_eye",
+      "label": "Provide eye protection appropriate to the hazard (impact grade, chemical splash, or optical radiation) and ensure it is worn for the relevant task",
+      "discharges": ["ppe_reg4", "ppe_reg10"],
+      "sourced_from": {"publication": "L25", "kind": "guidance"},
+      "acop_derived": false,
+      "comment_template": "{who} observed without {control} where {hazard_context}, which could result in {outcome}{priority_sentiment}"
+    },
+    {
+      "id": "ca_provide_gloves",
+      "label": "Provide gloves appropriate to the hand hazard (cut, abrasion, chemical, or vibration) and ensure they are worn for the relevant task",
+      "discharges": ["ppe_reg4", "ppe_reg10"],
+      "sourced_from": {"publication": "L25", "kind": "guidance"},
+      "acop_derived": false,
+      "comment_template": "{who} observed without {control} where {hazard_context}, which could result in {outcome}{priority_sentiment}"
+    },
+    {
+      "id": "ca_provide_hiviz",
+      "label": "Provide high-visibility clothing suitable for the site environment and ensure it is worn in the designated area",
+      "discharges": ["ppe_reg4", "ppe_reg10"],
+      "sourced_from": {"publication": "L25", "kind": "guidance"},
+      "acop_derived": false,
+      "comment_template": "{who} observed without {control} where {hazard_context}, which could result in {outcome}{priority_sentiment}"
+    }
   ]
 }

@@ -6,9 +6,16 @@ Running record so any session can pick up the thread. Append new stages to the t
 Professional aid, not a definitive determination.
 
 ## Where we are
-Design phase complete; the deterministic reasoning core is now implemented and tested in `backend/`. The full agreed basis is `docs/FUNDAMENTALS.md`; the build sequence is
-`docs/ROADMAP.md`. Next action on desktop: commit this bundle, then begin Milestone Zero, then
-adjudicate the first knowledge-base batch.
+
+Milestone Zero is partially complete. The deterministic reasoning core is implemented, tested,
+and expanded to full protective-equipment coverage. The data model now carries all
+"cannot-be-retrofitted" fields (tenant_id, site_id, inspection_id, section_id, recurrence_key,
+priority triple, status, audit_log). A FastAPI test harness enables manual browser testing. A
+strategy audit identified the remaining gaps. A DPIA skeleton has been drafted.
+
+Remaining Milestone Zero work before Milestone One features: persistence layer, knowledge-base
+adjudication, template JSON, DPIA sign-off by the data controller. See `docs/AUDIT_2026-07-04.md`
+for the full gap analysis and `docs/DEVELOPMENT.md` for the current issue list.
 
 ## Roadmap (summary — full version in docs/ROADMAP.md)
 - **Milestone Zero** — foundations: commit scaffold, lock the data model, draft the Data Protection
@@ -24,6 +31,44 @@ adjudicate the first knowledge-base batch.
   prioritisation.
 
 ## Stages
+
+### Stage 14 — Strategy audit; Milestone Zero data model; pipeline fixes  ·  2026-07-04
+- `docs/AUDIT_2026-07-04.md`: full gap analysis comparing strategy documents against working code.
+  Ten gaps identified; ordered by severity. Serves as the reference for the next build sessions.
+- `docs/DPIA.md`: Data Protection Impact Assessment skeleton drafted (required before real-site
+  use). Six sections: description of processing, necessity/proportionality, personal data
+  inventory, risks, mitigations, residual risk and sign-off. Marked DRAFT pending data-controller
+  review and sign-off.
+- `backend/sitesentry/models.py`: Milestone Zero fields added to `Finding` — `tenant_id`,
+  `site_id`, `inspection_id`, `section_id`, `recurrence_key`, `priority_suggested`,
+  `priority_confirmed`, `priority_adjusted_by_human`, `status` (ObservationStatus enum),
+  `audit_log` (append-only). New dataclasses: `ObservationStatus`, `ElementOutcome`,
+  `ElementResult`, `TemplateElement`, `TemplateSection`, `InspectionTemplate`. All existing
+  tests pass unchanged (new fields default to empty/neutral values).
+- `backend/pyproject.toml`: ruff and mypy configuration committed; tool behaviour consistent
+  across machines.
+- CI fixed: `api_requirements.txt` now installed in the backend job so FastAPI imports resolve;
+  mypy scoped to `sitesentry/` and `tests/` (api.py checked separately as it has its own deps);
+  all enums upgraded to `StrEnum`; deprecated `typing.List`/`Optional` replaced throughout.
+- `docs/DEVELOPMENT.md`: stale vision-first "first issues" list replaced with the current
+  Milestone Zero completion checklist.
+- `docs/PROGRESS.md` (this file): "Where we are" updated to reflect current state.
+- Verified: lint clean, format clean, mypy clean, 8/8 pytest, 10/10 selfcheck.
+
+### Stage 13 — PPE knowledge base expanded; FastAPI test harness  ·  2026-07-04
+- `packs/construction/knowledge_base/`: actions 3→7 (ca_maintain_ppe, ca_provide_eye,
+  ca_provide_gloves, ca_provide_hiviz); mapping 2→13 (full PPE coverage for head/foot/eye/
+  hand/hiviz across all three reason codes); vocabulary 3→5 tags (hand, hiviz added).
+- `backend/api.py`: FastAPI app with embedded HTML test harness at GET /; `/vocabulary` and
+  `/consolidate` endpoints; advisory banner on every response.
+- Tests updated: `test_gap_detection` uses a synthetic in-memory KB; two new tests for
+  ca_maintain_ppe and eye protection mapping; sentinel changed to hiviz × doesnt_fit.
+- Verified: 8/8 pytest, 10/10 selfcheck.
+
+### Stage 12 — Knowledge base scaffold + reasoning core verified  ·  2026-07-04
+- Zip scaffold applied to branch; reasoning core in sitesentry/; provisional KB from Stage 11.
+- Initial selfcheck and pytest verified.
+
 ### Stage 11 — Reasoning core in code (tested)  ·  2026-06-20
 - `backend/sitesentry/`: the deterministic Milestone One spine in pure standard-library Python —
   knowledge base loader + exact (tag x reason) lookup, consolidation with citation accumulation,

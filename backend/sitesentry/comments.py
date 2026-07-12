@@ -4,6 +4,7 @@ Form: "observation of hazard leading to outcome, with priority sentiment". The p
 is selected from the confirmed band, never invented. A language model may later smooth wording, but
 the substance and the sentiment are fixed here.
 """
+
 from __future__ import annotations
 
 from .knowledge_base import KnowledgeBase
